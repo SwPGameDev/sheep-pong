@@ -5,7 +5,9 @@ public class TESTball : MonoBehaviour
 {
     Vector3 ballPos;
     Rigidbody rb;
-    Vector3 startVector;
+    Vector3 startVelocity;
+    [SerializeField] Vector3 startPos = Vector3.zero;
+    [SerializeField] float startLaunchForce = 10;
 
     InputAction resetAction;
 
@@ -13,11 +15,10 @@ public class TESTball : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        startVector = Random.onUnitSphere;
-        startVector = new Vector3(startVector.x, startVector.y, 0).normalized;
+        StartGame();
 
 
-        print(startVector);
+        print(startVelocity);
 
         resetAction = InputSystem.actions.FindAction("Reset");
     }
@@ -29,16 +30,19 @@ public class TESTball : MonoBehaviour
 
         if (resetAction.WasPressedThisFrame())
         {
-            Restart();
+            StartGame();
         }
         
     }
 
-
-    void Restart()
+    void StartGame()
     {
-        startVector = Random.onUnitSphere;
-        startVector = new Vector3(startVector.x, startVector.y, 0).normalized;
+        gameObject.transform.position = startPos;
+
+        startVelocity = Random.onUnitSphere;
+        startVelocity = new Vector3(startVelocity.x, startVelocity.y, 0).normalized;
+
+        rb.linearVelocity = startVelocity * startLaunchForce;
     }
 
 
@@ -46,6 +50,6 @@ public class TESTball : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(ballPos, startVector);
+        Gizmos.DrawLine(ballPos, startVelocity);
     }
 }
